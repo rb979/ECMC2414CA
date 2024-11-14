@@ -10,6 +10,10 @@ public class Deck {
         this.deck = cards;
     }
 
+    public void give_card(Card card) {
+        this.deck.add(card);
+    }
+
     public synchronized Card draw() {
         return deck.removeLast();
     }
