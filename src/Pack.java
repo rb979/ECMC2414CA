@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
 public class Pack {
@@ -32,6 +33,9 @@ public class Pack {
         if (card_input.size() != 8 * numPlayers) {
             throw new IOException("Invalid number of lines in input file");
         }
+
+        // TODO remove
+        Collections.shuffle(card_input);
 
         this.cards = card_input;
     }

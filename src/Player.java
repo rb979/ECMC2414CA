@@ -11,7 +11,10 @@ public class Player extends Thread {
     private final Deck leftDeck;
     private final Deck rightDeck;
 
-    private boolean hasWon;
+    private boolean hasWon = false;
+    private boolean hasLost = false;
+
+    private Random rand = new Random();
 
     /**
      * Constructs a player.
@@ -33,65 +36,69 @@ public class Player extends Thread {
 
     @Override
     public void run() {
-        while (!hasWon) {
-            while(leftDeck.isLocked() || rightDeck.isLocked()) {
-                try {
-                    Thread.sleep(new Random().nextInt(500) + 5);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+        while (!hasWon && !hasLost) {
+            leftDeck.lock.lock();
+            rightDeck.lock.lock();
+
+            if (leftDeck.getDeckSize() > 2) {
+                doTurn();
+                checkForWin();
             }
 
-            leftDeck.lock();
-            rightDeck.lock();
-
-            Card draw = leftDeck.draw();
-            cards.add(draw);
-
-            logger.logDraw(this, draw, leftDeck);
-
-            Collections.shuffle(cards);
-
-            for (Card card : cards) {
-                if (card.getDenomination() != n) {
-                    cards.remove(card);
-                    rightDeck.discard(card);
-
-                    logger.logDiscard(this, card, rightDeck);
-
-                    break;
-                }
-            }
-
-            leftDeck.unlock();
-            rightDeck.unlock();
-
-            boolean allSame = true;
-
-            int prev = cards.getFirst().getDenomination();
-            for (Card card : cards) {
-                if (card.getDenomination() != prev) {
-                    allSame = false;
-                    break;
-                }
-            }
-
-            if (allSame) {
-                hasWon = true;
-            }
+            leftDeck.lock.unlock();
+            rightDeck.lock.unlock();
 
             try {
-                Thread.sleep(new Random().nextInt(500) + 5);
+                Thread.sleep(n);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
 
-        logger.logWin(this);
+        if (hasWon) {
+            logger.logWin(this);
+        }
     }
 
-    public void flagLose() {
-        logger.logLose(this, this);
+    private void checkForWin() {
+        boolean allSame = true;
+
+        int prev = cards.getFirst().getDenomination();
+        for (Card card : cards) {
+            if (card.getDenomination() != prev) {
+                allSame = false;
+                break;
+            }
+        }
+
+        if (allSame) {
+            hasWon = true;
+        }
+    }
+
+    private void doTurn() {
+        Card draw = leftDeck.draw();
+        cards.add(draw);
+
+        logger.logDraw(this, draw, leftDeck);
+
+        Collections.shuffle(cards);
+
+        for (Card card : cards) {
+            if (card.getDenomination() != n) {
+                cards.remove(card);
+                rightDeck.discard(card);
+
+                logger.logDiscard(this, card, rightDeck);
+
+                break;
+            }
+        }
+    }
+
+    public void flagLose(Player winner) {
+        hasLost = true;
+        logger.logLose(this, winner);
     }
 
     public synchronized boolean getHasWon() {

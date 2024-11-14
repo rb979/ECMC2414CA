@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CardGame {
@@ -53,7 +54,7 @@ public class CardGame {
 
                     for (Player loser : players) {
                         if (loser != player) {
-                            loser.flagLose();
+                            loser.flagLose(player);
                         }
                     }
                 }
@@ -63,11 +64,18 @@ public class CardGame {
 
     private int getNumPlayers() {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter number of players: ");
-        int numPlayers = sc.nextInt();
+        System.out.print("Enter number of players: ");
+
+        int numPlayers;
+        try {
+            numPlayers = sc.nextInt();
+        } catch (InputMismatchException e) {
+            System.out.println("Invalid number of players!");
+            return getNumPlayers();
+        }
 
         if (numPlayers <= 0) {
-            System.out.print("Invalid number of players!");
+            System.out.println("Invalid number of players!");
             return getNumPlayers();
         }
 
@@ -75,11 +83,10 @@ public class CardGame {
     }
 
     private String getPackLocation() {
-        return "pack.txt";
-//        Scanner sc = new Scanner(System.in);
-//        System.out.print("Enter pack location: ");
-//
-//        return sc.next();
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter pack location: ");
+
+        return sc.next();
     }
 
     private Pack loadPack(int numPlayers) {
