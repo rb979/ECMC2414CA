@@ -1,5 +1,5 @@
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Scanner;
 
 public class CardGame {
     private Player[] players;
@@ -7,49 +7,89 @@ public class CardGame {
 
     public static void main(String[] args) {
         CardGame game = new CardGame();
+        game.run();
     }
 
     public CardGame() {
         int numPlayers = getNumPlayers();
-        String packLocation = getPackLocation();
-        Pack pack = loadPack(packLocation);
+        Pack pack = loadPack(numPlayers);
 
+        // Create the decks and players
         decks = new Deck[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new Deck(new DeckLogger(), new ArrayList<>(), i + 1);
+            decks[i] = new Deck(i + 1);
         }
 
         players = new Player[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            players[i] = new Player(new PlayerLogger(), decks[i - 1 % numPlayers], decks[i + 1 % numPlayers], new ArrayList<>());
+            players[i] = new Player(i + 1, numPlayers, decks);
         }
 
+        // Deal the cards
         for (int j = 0; j < 4; j ++) {
             for (int i = 0; i < numPlayers; i++) {
-                players[i].give_card(pack.pop());
+                players[i].giveCard(pack.pop());
             }
         }
 
         for (int j = 0; j < 4; j ++) {
             for (int i = 0; i < numPlayers; i++) {
-                decks[i].give_card(pack.pop());
+                decks[i].giveCard(pack.pop());
+            }
+        }
+    }
+
+    public void run() {
+        for (Player player : players) {
+            player.start();
+        }
+
+        boolean gameOver = false;
+
+        while (!gameOver) {
+            for (Player player : players) {
+                if (player.getHasWon()) {
+                    gameOver = true;
+
+                    for (Player loser : players) {
+                        if (loser != player) {
+                            loser.flagLose();
+                        }
+                    }
+                }
             }
         }
     }
 
     private int getNumPlayers() {
-        throw new RuntimeException("Not implemented yet");
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter number of players: ");
+        int numPlayers = sc.nextInt();
+
+        if (numPlayers <= 0) {
+            System.out.print("Invalid number of players!");
+            return getNumPlayers();
+        }
+
+        return numPlayers;
     }
 
     private String getPackLocation() {
-        throw new RuntimeException("Not implemented yet");
+        return "pack.txt";
+//        Scanner sc = new Scanner(System.in);
+//        System.out.print("Enter pack location: ");
+//
+//        return sc.next();
     }
 
-    private Pack loadPack(String fileName) {
+    private Pack loadPack(int numPlayers) {
+        String fileName = getPackLocation();
+
         try {
-            return new Pack(fileName);
+            return new Pack(fileName, numPlayers);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Invalid pack file.");
+            return loadPack(numPlayers);
         }
     }
 }

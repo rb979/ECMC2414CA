@@ -1,31 +1,49 @@
 import java.util.ArrayList;
-import java.util.List;
 
 public class Deck {
+    private final IDeckLogger logger = new MockDeckLogger();
     private final int n;
-    private ArrayList<Card> deck;
+    private final ArrayList<Card> deck = new ArrayList<>();
 
-    public Deck(IDeckLogger logger, ArrayList<Card> cards, int n) {
+    private boolean isLocked = false;
+
+    public Deck(int n) {
         this.n = n;
-        this.deck = cards;
     }
 
-    public void give_card(Card card) {
+    public synchronized void lock() {
+        isLocked = true;
+    }
+
+    public synchronized void unlock() {
+        isLocked = false;
+    }
+
+    public synchronized boolean isLocked() {
+        return isLocked;
+    }
+
+    public void giveCard(Card card) {
         this.deck.add(card);
     }
 
     public synchronized Card draw() {
-        return deck.removeLast();
+        return deck.removeFirst();
     }
 
     public synchronized void discard(Card card) {
         deck.add(card);
     }
 
-    /**
-     * Writes the contents of this deck to <code>output/deck[n]_output.txt</code>.
-     */
-    public synchronized void writeContents() {
+    public int getN() {
+        return n;
+    }
 
+    public int getDeckSize() {
+        return deck.size();
+    }
+
+    public ArrayList<Card> getDeck() {
+        return deck;
     }
 }

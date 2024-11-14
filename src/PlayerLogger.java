@@ -14,4 +14,14 @@ public class PlayerLogger implements IPlayerLogger {
     public void logHand(Player player) {
 
     }
+
+    @Override
+    public void logWin(Player player) {
+
+    }
+
+    @Override
+    public void logLose(Player player, Player winner) {
+
+    }
 }
