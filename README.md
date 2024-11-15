@@ -79,18 +79,13 @@
 
 1. **Which card should a player choose to discard?**
   - You can randomly choose one which is not the preferred denomination to discard.
-
 2. **Can a player who is given four cards which are all the same value at the start of the game, but the value is not their preferred denomination, still win?**
   - Yes, it still can win the game.
-
 3. **How many output files from the production code?**
   - 2n, where n is the number of players.
-
 4. **Do I need to use Javadoc?**
   - No, you don’t need to.
-
 5. **My code reads in a valid pack file which doesn’t contain the cards that allow a winning hand. What should I do?**
   - It’s normal. You don’t need to do anything. The code and pack are two separate things. You need to make sure your code is correct, which means if it takes in a valid pack that allows a winning hand, it can output a winning hand.
-
 6. **Do I need to test private methods?**
   - Yes, you can consider using Java Reflection.

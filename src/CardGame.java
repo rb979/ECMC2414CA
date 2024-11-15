@@ -34,27 +34,18 @@ public class CardGame {
      * </p>
      */
     public CardGame() {
-//        int numPlayers = getNumPlayers();
-//        Pack pack = getPack(numPlayers);
-
-        int numPlayers = 50;
-
-        Pack pack = null;
-        try {
-            pack = new Pack("pack50.txt", numPlayers);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        int numPlayers = getNumPlayers();
+        Pack pack = getPack(numPlayers);
 
         // Create the decks and players
         decks = new Deck[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new Deck(new FileDeckLogger(), i + 1);
+            decks[i] = new Deck(new ConsoleDeckLogger(), i + 1);
         }
 
         players = new Player[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            players[i] = new Player(new FilePlayerLogger(), i + 1, numPlayers, decks);
+            players[i] = new Player(new ConsolePlayerLogger(), i + 1, numPlayers, decks);
         }
 
         // Deal the cards to players and decks
