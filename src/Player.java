@@ -19,15 +19,29 @@ public class Player extends Thread {
     private final Deck leftDeck;
     private final Deck rightDeck;
 
-    private boolean hasWon = false;
-    private boolean hasLost = false;
+    /**
+     * The main execution loop for this Player thread. This method continues
+     * to run until the Player wins or loses the game.
+     */
+
+    int waitCount = 0;
 
     private final Random rand = new Random();
+    private boolean gameOver = false;
+
+    /**
+     * Adds a {@link Card} to this Player's hand.
+     *
+     * @param card the Card to be added
+     */
+    public void giveCard(Card card) {
+        this.cards.add(card);
+    }
 
     /**
      * Constructs a Player object.
      *
-     * @param logger the {@link IPlayerLogger} to use
+     * @param logger     the {@link IPlayerLogger} to use
      * @param n          this player's number (1-indexed)
      * @param numPlayers the number of players in the game
      * @param decks      an ordered array of {@link Deck Decks} being used
@@ -41,44 +55,34 @@ public class Player extends Thread {
         this.rightDeck = decks[n % numPlayers];
     }
 
-    /**
-     * Adds a {@link Card} to this Player's hand.
-     *
-     * @param card the Card to be added
-     */
-    public void giveCard(Card card) {
-        this.cards.add(card);
-    }
-
-    /**
-     * The main execution loop for this Player thread. This method continues
-     * to run until the Player wins or loses the game.
-     */
     @Override
-    public void run() {
-        while (!hasWon && !hasLost) {
-            if (leftDeck.getDeckSize() > 2) {
-                doTurn();
+    public synchronized void run() {
+        while (!gameOver) {
+            if (allCardsSame()) {
+                gameOver = true;
+            } else {
+                if (leftDeck.getDeckSize() >= 4 && rightDeck.getDeckSize() <= 4) {
+                    doTurn();
+                    waitCount = 0;
+                } else {
+                    waitCount++;
+                }
+
+                try {
+                    wait(rand.nextLong(5, 10L * (waitCount + 1)));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
-
-            hasWon = hasWon();
-
-            try {
-                Thread.sleep(rand.nextLong(10, 50));
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        if (hasWon) {
-            logger.logWin(this);
         }
     }
 
     /**
-     * Checks if all cards in this Player's hand have the same denomination. If so, the Player has won.
+     * Checks if all cards in this Player's hand have the same denomination.
+     *
+     * @return {@code true} if all {@link Card Cards} have the same denomination, {@code false} otherwise.
      */
-    private boolean hasWon() {
+    public boolean allCardsSame() {
         boolean allSame = true;
 
         int d = cards.getFirst().getDenomination();
@@ -97,6 +101,23 @@ public class Player extends Thread {
      * Performs a single turn for this Player. This involves drawing a card from the left deck and discarding a non-matching card to the right deck.
      */
     private void doTurn() {
+        if (allCardsSame()) {
+            return;
+        }
+
+        draw();
+
+        Collections.shuffle(cards);
+
+        for (Card card : cards) {
+            if (card.getDenomination() != n) {
+                discard(card);
+                break;
+            }
+        }
+    }
+
+    private void draw() {
         leftDeck.l.lock();
         Card draw = leftDeck.draw();
         leftDeck.l.unlock();
@@ -104,22 +125,18 @@ public class Player extends Thread {
         cards.add(draw);
 
         logger.logDraw(this, draw, leftDeck);
+    }
 
-        Collections.shuffle(cards);
-
-        for (Card card : cards) {
-            if (card.getDenomination() != n) {
-                cards.remove(card);
-
-                rightDeck.l.lock();
-                rightDeck.discard(card);
-                rightDeck.l.unlock();
-
-                logger.logDiscard(this, card, rightDeck);
-
-                break;
-            }
+    private void discard(Card card) {
+        if (!cards.remove(card)) {
+            throw new RuntimeException("invalid card");
         }
+
+        rightDeck.l.lock();
+        rightDeck.discard(card);
+        rightDeck.l.unlock();
+
+        logger.logDiscard(this, card, rightDeck);
     }
 
     /**
@@ -128,17 +145,22 @@ public class Player extends Thread {
      * @param winner the Player who won the game
      */
     public void flagLose(Player winner) {
-        hasLost = true;
+        gameOver = true;
         logger.logLose(this, winner);
     }
 
     /**
-     * Returns whether this Player has won the game.
-     *
-     * @return {@code true} if the Player has won, {@code false} otherwise
+     * Logs this Player's hand.
      */
-    public synchronized boolean getHasWon() {
-        return hasWon;
+    public void logHand() {
+        logger.logHand(this);
+    }
+
+    /**
+     * Logs that this Player has won the game.
+     */
+    public void logWin() {
+        logger.logWin(this);
     }
 
     /**

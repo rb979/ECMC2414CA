@@ -72,32 +72,41 @@ public class CardGame {
      * </p>
      */
     public void run() {
-        // Start all player threads
+        Player winner = null;
+
         for (Player player : players) {
             player.start();
         }
 
-        Player winner = null;
-
-        // Main gameplay loop
+        // Gameplay loop
         while (winner == null) {
             for (Player player : players) {
-                if (player.getHasWon()) {
+                if (player.allCardsSame()) {
                     winner = player;
+                    break;
                 }
             }
-        }
 
-        // Notify losing players
-        for (Player player : players) {
-            if (winner != player) {
-                winner.flagLose(player);
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
-        // Log the final state of all decks
+        // End of game logging
+        winner.logWin();
+
+        for (Player player : players) {
+            if (player != winner) {
+                player.flagLose(winner);
+            }
+
+            player.logHand();
+        }
+
         for (Deck deck : decks) {
-            deck.logHand();
+            deck.logCards();
         }
     }
 

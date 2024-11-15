@@ -47,7 +47,7 @@ public class Deck {
      *
      * @return the {@link Card} that was drawn from the Deck
      */
-    public synchronized Card draw() {
+    public Card draw() {
         return deck.removeFirst();
     }
 
@@ -60,7 +60,7 @@ public class Deck {
      *
      * @param card the Card to be discarded into the Deck
      */
-    public synchronized void discard(Card card) {
+    public void discard(Card card) {
         deck.add(card);
     }
 
@@ -78,7 +78,7 @@ public class Deck {
      *
      * @return the size of the Deck
      */
-    public int getDeckSize() {
+    public synchronized int getDeckSize() {
         return deck.size();
     }
 
@@ -92,9 +92,9 @@ public class Deck {
     }
 
     /**
-     * Logs the current state of the Deck's hand.
+     * Logs the current state of this Deck's cards.
      */
-    public void logHand() {
+    public void logCards() {
         logger.logCards(this);
     }
 }
