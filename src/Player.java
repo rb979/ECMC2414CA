@@ -13,7 +13,7 @@ public class Player extends Thread {
      */
     private final int n;
 
-    private final IPlayerLogger logger = new ConsolePlayerLogger();
+    private final IPlayerLogger logger;
     private final ArrayList<Card> cards;
 
     private final Deck leftDeck;
