@@ -6,7 +6,7 @@ public class ConsoleDeckLogger implements IDeckLogger {
     public void logCards(Deck deck) {
         StringBuilder cards = new StringBuilder();
 
-        for (Card c : deck.getDeck()) {
+        for (Card c : deck.getCards()) {
             cards.append(c.getDenomination());
             cards.append(" ");
         }

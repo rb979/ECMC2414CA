@@ -1,20 +1,11 @@
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Random;
 
 /**
  * Represents a Player in a card game. This Player extends the `Thread` class
  * and runs concurrently with other Players.
  */
-public class Player extends Thread {
-
-    /**
-     * This Player's number (1-indexed).
-     */
-    private final int n;
-
+public class Player extends CardHolder implements Runnable {
     private final IPlayerLogger logger;
-    private final ArrayList<Card> cards;
 
     private final Deck leftDeck;
     private final Deck rightDeck;
@@ -30,15 +21,6 @@ public class Player extends Thread {
     private boolean gameOver = false;
 
     /**
-     * Adds a {@link Card} to this Player's hand.
-     *
-     * @param card the Card to be added
-     */
-    public void giveCard(Card card) {
-        this.cards.add(card);
-    }
-
-    /**
      * Constructs a Player object.
      *
      * @param logger     the {@link IPlayerLogger} to use
@@ -48,9 +30,9 @@ public class Player extends Thread {
      * @throws IllegalArgumentException if the provided number of players is less than 2
      */
     public Player(IPlayerLogger logger, int n, int numPlayers, Deck[] decks) {
+        super(n);
+
         this.logger = logger;
-        this.n = n;
-        this.cards = new ArrayList<>();
         this.leftDeck = decks[(n - 1) % numPlayers];
         this.rightDeck = decks[n % numPlayers];
     }
@@ -61,7 +43,7 @@ public class Player extends Thread {
             if (allCardsSame()) {
                 gameOver = true;
             } else {
-                if (leftDeck.getDeckSize() >= 4 && rightDeck.getDeckSize() <= 4) {
+                if (leftDeck.size() >= 4 && rightDeck.size() <= 4) {
                     doTurn();
                     waitCount = 0;
                 } else {
@@ -69,32 +51,12 @@ public class Player extends Thread {
                 }
 
                 try {
-                    wait(rand.nextLong(5, 10L * (waitCount + 1)));
+                    wait(rand.nextLong(5, waitCount + 10));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             }
         }
-    }
-
-    /**
-     * Checks if all cards in this Player's hand have the same denomination.
-     *
-     * @return {@code true} if all {@link Card Cards} have the same denomination, {@code false} otherwise.
-     */
-    public boolean allCardsSame() {
-        boolean allSame = true;
-
-        int d = cards.getFirst().getDenomination();
-
-        for (Card card : cards) {
-            if (card.getDenomination() != d) {
-                allSame = false;
-                break;
-            }
-        }
-
-        return allSame;
     }
 
     /**
@@ -107,9 +69,9 @@ public class Player extends Thread {
 
         draw();
 
-        Collections.shuffle(cards);
+        shuffle();
 
-        for (Card card : cards) {
+        for (Card card : getCards()) {
             if (card.getDenomination() != n) {
                 discard(card);
                 break;
@@ -121,11 +83,8 @@ public class Player extends Thread {
      * Draws a {@link Card} from the left {@link Deck} and adds it to {@code cards}.
      */
     private void draw() {
-        leftDeck.l.lock();
-        Card draw = leftDeck.draw();
-        leftDeck.l.unlock();
-
-        cards.add(draw);
+        Card draw = leftDeck.popCard();
+        pushCard(draw);
 
         logger.logDraw(this, draw, leftDeck);
     }
@@ -136,13 +95,7 @@ public class Player extends Thread {
      * @param card the {@link Card} to discard
      */
     private void discard(Card card) {
-        if (!cards.remove(card)) {
-            throw new RuntimeException("invalid card");
-        }
-
-        rightDeck.l.lock();
-        rightDeck.discard(card);
-        rightDeck.l.unlock();
+        transferCard(card, rightDeck);
 
         logger.logDiscard(this, card, rightDeck);
     }
@@ -178,14 +131,5 @@ public class Player extends Thread {
      */
     public int getN() {
         return n;
-    }
-
-    /**
-     * Returns a copy of the {@link ArrayList} containing this Player's {@link Card Cards}.
-     *
-     * @return a copy of the Player's card list
-     */
-    public ArrayList<Card> getCards() {
-        return new ArrayList<>(cards);
     }
 }

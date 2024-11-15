@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
 /**
@@ -44,6 +45,8 @@ public class Pack {
         if (card_input.size() != 8 * numPlayers) {
             throw new IOException("must contain 8n lines");
         }
+
+        Collections.shuffle(card_input);
 
         this.cards = card_input;
     }
