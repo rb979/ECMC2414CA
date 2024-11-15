@@ -117,6 +117,9 @@ public class Player extends Thread {
         }
     }
 
+    /**
+     * Draws a {@link Card} from the left {@link Deck} and adds it to {@code cards}.
+     */
     private void draw() {
         leftDeck.l.lock();
         Card draw = leftDeck.draw();
@@ -127,6 +130,11 @@ public class Player extends Thread {
         logger.logDraw(this, draw, leftDeck);
     }
 
+    /**
+     * Discards a {@link Card} to the right {@link Deck} and removes it from {@code cards}.
+     *
+     * @param card the {@link Card} to discard
+     */
     private void discard(Card card) {
         if (!cards.remove(card)) {
             throw new RuntimeException("invalid card");
