@@ -1,3 +1,12 @@
+/**
+ * Interface for logging deck actions.
+ */
 public interface IDeckLogger {
-    public void log(Deck deck);
+
+    /**
+     * Logs the cards contained in the specified deck.
+     *
+     * @param deck the {@link Deck} whose cards are being logged.
+     */
+    void logCards(Deck deck);
 }

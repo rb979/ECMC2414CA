@@ -1,4 +1,4 @@
-public class PlayerLogger implements IPlayerLogger {
+public class FilePlayerLogger implements IPlayerLogger {
 
     @Override
     public void logDraw(Player player, Card card, Deck deck) {
