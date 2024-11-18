@@ -9,9 +9,9 @@ public abstract class CardHolder {
     private final ArrayList<Card> cards = new ArrayList<>();
 
     /**
-     * Constructs a CardHolder object with the specified player number.
+     * Constructs a CardHolder object with the specified identification number.
      *
-     * @param n the player number (1-indexed)
+     * @param n the identification number (1-indexed)
      */
     public CardHolder(int n) {
         this.n = n;
