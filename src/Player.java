@@ -10,13 +10,6 @@ public class Player extends CardHolder implements Runnable {
     private final Deck leftDeck;
     private final Deck rightDeck;
 
-    /**
-     * The main execution loop for this Player thread. This method continues
-     * to run until the Player wins or loses the game.
-     */
-
-    int waitCount = 0;
-
     private final Random rand = new Random();
     private boolean gameOver = false;
 
@@ -37,6 +30,10 @@ public class Player extends CardHolder implements Runnable {
         this.rightDeck = decks[n % numPlayers];
     }
 
+    /**
+     * The main execution loop for this Player thread. This method continues
+     * to run until the Player wins or loses the game.
+     */
     @Override
     public synchronized void run() {
         while (!gameOver) {
@@ -45,13 +42,10 @@ public class Player extends CardHolder implements Runnable {
             } else {
                 if (leftDeck.size() >= 4 && rightDeck.size() <= 4) {
                     doTurn();
-                    waitCount = 0;
-                } else {
-                    waitCount++;
                 }
 
                 try {
-                    wait(rand.nextLong(5, waitCount + 10));
+                    wait(rand.nextLong(5, 10));
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
