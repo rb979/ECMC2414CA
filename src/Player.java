@@ -65,7 +65,7 @@ public class Player extends CardHolder implements Runnable {
 
         shuffle();
 
-        for (Card card : getCards()) {
+        for (Card card : cards) {
             if (card.getDenomination() != n) {
                 discard(card);
                 break;
@@ -123,7 +123,7 @@ public class Player extends CardHolder implements Runnable {
      *
      * @return the Player's number
      */
-    public int getN() {
+    public int number() {
         return n;
     }
 }

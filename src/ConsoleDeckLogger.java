@@ -11,6 +11,6 @@ public class ConsoleDeckLogger implements IDeckLogger {
             cards.append(" ");
         }
 
-        System.out.printf("deck %d contains: %s\n", deck.getN(), cards);
+        System.out.printf("deck %d contains: %s\n", deck.number(), cards);
     }
 }

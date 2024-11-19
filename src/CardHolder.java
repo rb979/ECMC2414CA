@@ -1,12 +1,13 @@
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * Represents a CardHolder, a thread-safe collection of {@link Card Cards}.
  */
 public abstract class CardHolder {
-    public final int n;
-    private final ArrayList<Card> cards = new ArrayList<>();
+    protected final int n;
+    protected final ArrayList<Card> cards = new ArrayList<>();
 
     /**
      * Constructs a CardHolder object with the specified identification number.
@@ -50,11 +51,11 @@ public abstract class CardHolder {
      *
      * @param card the {@link Card} to remove
      * @param to   the {@link CardHolder} to transfer the card to
-     * @throws RuntimeException if the card cannot be removed from this CardHolder
+     * @throws IllegalStateException if the card cannot be removed from this CardHolder
      */
     public synchronized void transferCard(Card card, CardHolder to) {
         if (!removeCard(card)) {
-            throw new RuntimeException("invalid card");
+            throw new IllegalStateException("invalid card");
         }
 
         to.pushCard(card);
@@ -88,12 +89,12 @@ public abstract class CardHolder {
     }
 
     /**
-     * Returns the list of {@link Card Cards} currently held by this CardHolder.
+     * Returns an immutable list of the {@link Card Cards} currently held by this CardHolder.
      *
      * @return the {@link ArrayList} of {@link Card Cards}
      */
-    public ArrayList<Card> getCards() {
-        return cards;
+    public List<Card> getCards() {
+        return Collections.unmodifiableList(cards);
     }
 
     /**
@@ -110,7 +111,7 @@ public abstract class CardHolder {
      *
      * @return the number of this CardHolder
      */
-    public int getN() {
+    public int number() {
         return n;
     }
 }
