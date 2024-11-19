@@ -28,8 +28,8 @@ public class CardHolderTest {
         cardHolderA.pushCard(card);
 
         List<Card> cards = cardHolderA.getCards();
-        assertEquals(1, cards.size());
-        assertEquals(card, cards.getFirst());
+        assertEquals("CardHolder should contain exactly 1 card after push", 1, cards.size());
+        assertEquals("The pushed card should be the first in the CardHolder", card, cards.getFirst());
     }
 
     @Test
@@ -37,14 +37,14 @@ public class CardHolderTest {
         Card card = new Card(1);
         cardHolderA.pushCard(card);
 
-        Card poppedCard = cardHolderA.popCard();
-        assertEquals(card, poppedCard);
-        assertTrue(cardHolderA.getCards().isEmpty());
+        Card poppedCard = cardHolderA.pop();
+        assertEquals("The popped card should match the one that was pushed", card, poppedCard);
+        assertTrue("CardHolder should be empty after popping the only card", cardHolderA.getCards().isEmpty());
     }
 
     @Test(expected = IllegalStateException.class)
     public void popCard_empty() {
-        cardHolderA.popCard();
+        cardHolderA.pop();
     }
 
     @Test
@@ -53,8 +53,8 @@ public class CardHolderTest {
         cardHolderA.pushCard(card);
 
         boolean removed = cardHolderA.removeCard(card);
-        assertTrue(removed);
-        assertTrue(cardHolderA.getCards().isEmpty());
+        assertTrue("removeCard should return true for a card present in the CardHolder", removed);
+        assertTrue("CardHolder should be empty after removing the only card", cardHolderA.getCards().isEmpty());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class CardHolderTest {
         Card card = new Card(1);
         boolean removed = cardHolderA.removeCard(card);
 
-        assertFalse(removed);
+        assertFalse("removeCard should return false for a card not present in the CardHolder", removed);
     }
 
     @Test
@@ -72,9 +72,9 @@ public class CardHolderTest {
 
         cardHolderA.transferCard(card, cardHolderB);
 
-        assertTrue(cardHolderA.getCards().isEmpty());
-        assertEquals(1, cardHolderB.getCards().size());
-        assertEquals(card, cardHolderB.getCards().getFirst());
+        assertTrue("CardHolderA should be empty after transferring its only card", cardHolderA.getCards().isEmpty());
+        assertEquals("CardHolderB should contain exactly 1 card after transfer", 1, cardHolderB.getCards().size());
+        assertEquals("The transferred card should be present in CardHolderB", card, cardHolderB.getCards().getFirst());
     }
 
     @Test(expected = IllegalStateException.class)
@@ -88,15 +88,15 @@ public class CardHolderTest {
         cardHolderA.pushCard(new Card(1));
         cardHolderA.pushCard(new Card(1));
 
-        assertTrue(cardHolderA.allCardsSame());
+        assertTrue("allCardsSame should return true when all cards have the same denomination", cardHolderA.allCardsSame());
 
         cardHolderA.pushCard(new Card(2));
-        assertFalse(cardHolderA.allCardsSame());
+        assertFalse("allCardsSame should return false when cards have different denominations", cardHolderA.allCardsSame());
     }
 
     @Test
     public void allCardsSame_empty() {
-        assertTrue(cardHolderA.allCardsSame());
+        assertTrue("allCardsSame should return true for an empty CardHolder", cardHolderA.allCardsSame());
     }
 
     @Test
@@ -108,18 +108,18 @@ public class CardHolderTest {
         cardHolderA.pushCard(card2);
 
         List<Card> cards = cardHolderA.getCards();
-        assertEquals(2, cards.size());
-        assertTrue(cards.contains(card1));
-        assertTrue(cards.contains(card2));
+        assertEquals("CardHolder should contain 2 cards", 2, cards.size());
+        assertTrue("CardHolder should contain card1", cards.contains(card1));
+        assertTrue("CardHolder should contain card2", cards.contains(card2));
     }
 
     @Test
     public void size() {
-        assertEquals(0, cardHolderA.size());
+        assertEquals("size should return 0 for an empty CardHolder", 0, cardHolderA.size());
 
         cardHolderA.pushCard(new Card(1));
         cardHolderA.pushCard(new Card(2));
 
-        assertEquals(2, cardHolderA.size());
+        assertEquals("size should return the correct count of cards in the CardHolder", 2, cardHolderA.size());
     }
 }

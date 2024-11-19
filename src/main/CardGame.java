@@ -28,7 +28,7 @@ public class CardGame {
     }
 
     /**
-     * Constructs a {@code main.CardGame} by setting up players, decks, and dealing cards.
+     * Constructs a {@code CardGame} by setting up players, decks, and dealing cards.
      *
      * <p>
      * Prompts the user for the number of players and the location of the pack file,
@@ -39,7 +39,6 @@ public class CardGame {
         int numPlayers = getNumPlayers();
         Pack pack = getPack(numPlayers);
 
-        // Create the decks and players
         decks = new Deck[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
             decks[i] = new Deck(new ConsoleDeckLogger(), i + 1);
@@ -50,16 +49,24 @@ public class CardGame {
             players[i] = new Player(new ConsolePlayerLogger(), i + 1, numPlayers, decks);
         }
 
-        // Deal the cards to players and decks
+        deal(pack);
+    }
+
+    /**
+     * Deals the cards between players and decks, starting round-robin with the players and then the decks.
+     *
+     * @param pack the {@link Pack} to deal.
+     */
+    private void deal(Pack pack) {
         for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < numPlayers; i++) {
-                players[i].pushCard(pack.pop());
+            for (Player player : players) {
+                player.pushCard(pack.pop());
             }
         }
 
         for (int j = 0; j < 4; j++) {
-            for (int i = 0; i < numPlayers; i++) {
-                decks[i].pushCard(pack.pop());
+            for (Deck deck : decks) {
+                deck.pushCard(pack.pop());
             }
         }
     }

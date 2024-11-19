@@ -43,7 +43,7 @@ public abstract class CardHolder {
      * @return the {@link Card} that was drawn from the Deck
      * @throws IllegalStateException if the CardHolder is empty
      */
-    public Card popCard() {
+    public Card pop() {
         lock.lock();
         try {
             if (cards.isEmpty()) {

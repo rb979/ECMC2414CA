@@ -4,15 +4,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.NoSuchElementException;
 
 /**
  * Represents the main.Pack of cards used in the game.
  */
-public class Pack {
-    private final ArrayList<Card> cards;
-
+public class Pack extends CardHolder {
     /**
      * Creates a {@code main.Pack} by reading cards from a file.
      *
@@ -30,40 +26,31 @@ public class Pack {
      * @throws IOException if the pack file is invalid
      */
     public Pack(String fileName, int numPlayers) throws IOException {
-        ArrayList<Card> card_input = new ArrayList<>();
+        super(0);
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                try {
-                    int number = Integer.parseInt(line);
-                    card_input.add(new Card(number));
-                } catch (NumberFormatException e) {
-                    throw new IOException("must only contain integers");
-                }
-            }
-        }
+        BufferedReader br = new BufferedReader(new FileReader(fileName));
+        ArrayList<Card> card_input = readCards(br);
 
         if (card_input.size() != 8 * numPlayers) {
             throw new IOException("must contain 8n lines");
         }
 
-        Collections.shuffle(card_input);
-
-        this.cards = card_input;
+        cards.addAll(card_input);
     }
 
-    /**
-     * Removes and returns the first {@link Card} from the main.Pack.
-     *
-     * <p>
-     * This method throws a {@link NoSuchElementException} if the main.Pack is empty.
-     * </p>
-     *
-     * @return the first card in the main.Pack
-     * @throws NoSuchElementException if the main.Pack is empty
-     */
-    public Card pop() throws NoSuchElementException {
-        return cards.removeFirst();
+    private ArrayList<Card> readCards(BufferedReader reader) throws IOException {
+        ArrayList<Card> cards = new ArrayList<>();
+
+        String line;
+        while ((line = reader.readLine()) != null) {
+            try {
+                int number = Integer.parseInt(line);
+                cards.add(new Card(number));
+            } catch (NumberFormatException e) {
+                throw new IOException("must only contain integers");
+            }
+        }
+
+        return cards;
     }
 }

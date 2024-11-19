@@ -80,7 +80,7 @@ public class Player extends CardHolder implements Runnable {
      * Draws a {@link Card} from the left {@link Deck} and adds it to {@code cards}.
      */
     private void draw() {
-        Card draw = leftDeck.popCard();
+        Card draw = leftDeck.pop();
         pushCard(draw);
 
         logger.logDraw(this, draw, leftDeck);
