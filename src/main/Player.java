@@ -12,8 +12,9 @@ public class Player extends CardHolder implements Runnable {
     private final Deck leftDeck;
     private final Deck rightDeck;
 
-    private final Random rand = new Random();
     private boolean gameOver = false;
+
+    private final Random rand = new Random();
 
     /**
      * Constructs a main.Player object.
@@ -46,11 +47,11 @@ public class Player extends CardHolder implements Runnable {
                     doTurn();
                 }
 
-//                try {
-//                    wait(rand.nextLong(5, 10));
-//                } catch (InterruptedException e) {
-//                    throw new RuntimeException(e);
-//                }
+                try {
+                    wait(rand.nextLong(5, 10));
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
