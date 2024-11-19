@@ -1,3 +1,5 @@
+package main;
+
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -26,7 +28,7 @@ public class CardGame {
     }
 
     /**
-     * Constructs a {@code CardGame} by setting up players, decks, and dealing cards.
+     * Constructs a {@code main.CardGame} by setting up players, decks, and dealing cards.
      *
      * <p>
      * Prompts the user for the number of players and the location of the pack file,
@@ -108,8 +110,6 @@ public class CardGame {
         for (Deck deck : decks) {
             deck.logCards();
         }
-
-        winner.logHand();
     }
 
     /**

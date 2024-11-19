@@ -1,3 +1,5 @@
+package main;
+
 /**
  * Interface for logging deck actions.
  */

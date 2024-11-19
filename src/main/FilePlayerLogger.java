@@ -1,3 +1,5 @@
+package main;
+
 public class FilePlayerLogger implements IPlayerLogger {
 
     @Override

@@ -1,7 +1,9 @@
+package main;
+
 import java.util.Random;
 
 /**
- * Represents a Player in a card game. This Player extends the `Thread` class
+ * Represents a main.Player in a card game. This main.Player extends the `Thread` class
  * and runs concurrently with other Players.
  */
 public class Player extends CardHolder implements Runnable {
@@ -14,7 +16,7 @@ public class Player extends CardHolder implements Runnable {
     private boolean gameOver = false;
 
     /**
-     * Constructs a Player object.
+     * Constructs a main.Player object.
      *
      * @param logger     the {@link IPlayerLogger} to use
      * @param n          this player's number (1-indexed)
@@ -31,8 +33,8 @@ public class Player extends CardHolder implements Runnable {
     }
 
     /**
-     * The main execution loop for this Player thread. This method continues
-     * to run until the Player wins or loses the game.
+     * The main execution loop for this main.Player thread. This method continues
+     * to run until the main.Player wins or loses the game.
      */
     @Override
     public synchronized void run() {
@@ -44,17 +46,17 @@ public class Player extends CardHolder implements Runnable {
                     doTurn();
                 }
 
-                try {
-                    wait(rand.nextLong(5, 10));
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+//                try {
+//                    wait(rand.nextLong(5, 10));
+//                } catch (InterruptedException e) {
+//                    throw new RuntimeException(e);
+//                }
             }
         }
     }
 
     /**
-     * Performs a single turn for this Player. This involves drawing a card from the left deck and discarding a non-matching card to the right deck.
+     * Performs a single turn for this main.Player. This involves drawing a card from the left deck and discarding a non-matching card to the right deck.
      */
     private void doTurn() {
         if (allCardsSame()) {
@@ -95,9 +97,9 @@ public class Player extends CardHolder implements Runnable {
     }
 
     /**
-     * Sets the {@code hasLost} flag for this Player and logs the winner.
+     * Sets the {@code hasLost} flag for this main.Player and logs the winner.
      *
-     * @param winner the Player who won the game
+     * @param winner the main.Player who won the game
      */
     public void flagLose(Player winner) {
         gameOver = true;
@@ -105,23 +107,23 @@ public class Player extends CardHolder implements Runnable {
     }
 
     /**
-     * Logs this Player's hand.
+     * Logs this main.Player's hand.
      */
     public void logHand() {
         logger.logHand(this);
     }
 
     /**
-     * Logs that this Player has won the game.
+     * Logs that this main.Player has won the game.
      */
     public void logWin() {
         logger.logWin(this);
     }
 
     /**
-     * Returns this Player's number.
+     * Returns this main.Player's number.
      *
-     * @return the Player's number
+     * @return the main.Player's number
      */
     public int number() {
         return n;

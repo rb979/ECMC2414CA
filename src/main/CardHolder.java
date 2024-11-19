@@ -1,6 +1,10 @@
+package main;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Represents a CardHolder, a thread-safe collection of {@link Card Cards}.
@@ -8,6 +12,7 @@ import java.util.List;
 public abstract class CardHolder {
     protected final int n;
     protected final ArrayList<Card> cards = new ArrayList<>();
+    private final Lock lock = new ReentrantLock();
 
     /**
      * Constructs a CardHolder object with the specified identification number.
@@ -23,17 +28,31 @@ public abstract class CardHolder {
      *
      * @param card the {@link Card} to be added
      */
-    public synchronized void pushCard(Card card) {
-        cards.add(card);
+    public void pushCard(Card card) {
+        lock.lock();
+        try {
+            cards.add(card);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
      * Removes and returns the first {@link Card} from this CardHolder.
      *
      * @return the {@link Card} that was drawn from the Deck
+     * @throws IllegalStateException if the CardHolder is empty
      */
-    public synchronized Card popCard() {
-        return cards.removeFirst();
+    public Card popCard() {
+        lock.lock();
+        try {
+            if (cards.isEmpty()) {
+                throw new IllegalStateException("Cannot pop from an empty CardHolder");
+            }
+            return cards.removeFirst();
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -42,8 +61,13 @@ public abstract class CardHolder {
      * @param card the {@link Card} to remove
      * @return {@code true} if the card was successfully removed, {@code false} otherwise
      */
-    public synchronized boolean removeCard(Card card) {
-        return cards.remove(card);
+    public boolean removeCard(Card card) {
+        lock.lock();
+        try {
+            return cards.remove(card);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -53,9 +77,14 @@ public abstract class CardHolder {
      * @param to   the {@link CardHolder} to transfer the card to
      * @throws IllegalStateException if the card cannot be removed from this CardHolder
      */
-    public synchronized void transferCard(Card card, CardHolder to) {
-        if (!removeCard(card)) {
-            throw new IllegalStateException("invalid card");
+    public void transferCard(Card card, CardHolder to) {
+        lock.lock();
+        try {
+            if (!removeCard(card)) {
+                throw new IllegalStateException("Invalid card");
+            }
+        } finally {
+            lock.unlock();
         }
 
         to.pushCard(card);
@@ -66,35 +95,50 @@ public abstract class CardHolder {
      *
      * @return {@code true} if all {@link Card Cards} have the same denomination, {@code false} otherwise
      */
-    public synchronized boolean allCardsSame() {
-        boolean allSame = true;
-
-        int d = cards.getFirst().getDenomination();
-
-        for (Card card : cards) {
-            if (card.getDenomination() != d) {
-                allSame = false;
-                break;
+    public boolean allCardsSame() {
+        lock.lock();
+        try {
+            if (cards.isEmpty()) {
+                return true;
             }
-        }
 
-        return allSame;
+            int denomination = cards.getFirst().getDenomination();
+            for (Card card : cards) {
+                if (card.getDenomination() != denomination) {
+                    return false;
+                }
+            }
+
+            return true;
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
      * Shuffles the {@link Card Cards} in this CardHolder.
      */
-    public synchronized void shuffle() {
-        Collections.shuffle(cards);
+    public void shuffle() {
+        lock.lock();
+        try {
+            Collections.shuffle(cards);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
      * Returns an immutable list of the {@link Card Cards} currently held by this CardHolder.
      *
-     * @return the {@link ArrayList} of {@link Card Cards}
+     * @return an unmodifiable {@link List} of {@link Card Cards}
      */
     public List<Card> getCards() {
-        return Collections.unmodifiableList(cards);
+        lock.lock();
+        try {
+            return List.copyOf(cards);
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**
@@ -103,7 +147,12 @@ public abstract class CardHolder {
      * @return the number of {@link Card Cards} in this CardHolder
      */
     public int size() {
-        return cards.size();
+        lock.lock();
+        try {
+            return cards.size();
+        } finally {
+            lock.unlock();
+        }
     }
 
     /**

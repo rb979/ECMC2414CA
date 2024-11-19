@@ -1,3 +1,5 @@
+package main;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -6,13 +8,13 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 
 /**
- * Represents the Pack of cards used in the game.
+ * Represents the main.Pack of cards used in the game.
  */
 public class Pack {
     private final ArrayList<Card> cards;
 
     /**
-     * Creates a {@code Pack} by reading cards from a file.
+     * Creates a {@code main.Pack} by reading cards from a file.
      *
      * <p>
      * This method throws an {@link IOException} if:
@@ -52,14 +54,14 @@ public class Pack {
     }
 
     /**
-     * Removes and returns the first {@link Card} from the Pack.
+     * Removes and returns the first {@link Card} from the main.Pack.
      *
      * <p>
-     * This method throws a {@link NoSuchElementException} if the Pack is empty.
+     * This method throws a {@link NoSuchElementException} if the main.Pack is empty.
      * </p>
      *
-     * @return the first card in the Pack
-     * @throws NoSuchElementException if the Pack is empty
+     * @return the first card in the main.Pack
+     * @throws NoSuchElementException if the main.Pack is empty
      */
     public Card pop() throws NoSuchElementException {
         return cards.removeFirst();

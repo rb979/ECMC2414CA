@@ -41,13 +41,15 @@
 ### Game Setup
 - The game has `n` players and `n` decks of cards, both numbered `1 ... n`.
 - There are `8n` cards in the pack, with both players and decks holding four each. Each card has a positive integer denomination.
-- The decks and players form a ring topology, with players having a deck to their left and right. Player 1 has Deck 1 to their left, and Deck 2 to their right.
+- The decks and players form a ring topology, with players having a deck to their left and right. main.Player 1 has
+  main.Deck 1 to their left, and main.Deck 2 to their right.
 - A pack is generated from a pack file, consisting of `8n` lines each containing a single integer which is a card denomination.
 - Cards are dealt in a round-robin fashion first between the players and then between the decks.
 - To win the game, a player must hold four cards of the same denomination.
 
 ### Gameplay
-- If a player has won, they should print `Player <n> wins`, notify the other threads, and exit.
+
+- If a player has won, they should print `main.Player <n> wins`, notify the other threads, and exit.
   - The program does not need to handle multiple players winning at the same time.
 - Otherwise, each player takes the card from the top of the deck to their left, and discards one to the bottom of the deck to their right.
 - Players should implement the following strategy:
@@ -56,7 +58,8 @@
 - Gameplay must be happening simultaneously, with all the players exchanging cards at the same time.
 
 ### Solution Development
-- Implement an executable class `CardGame`, whose `main` method:
+
+- Implement an executable class `main.CardGame`, whose `main` method:
   - Requests a valid number of players.
   - The location of a pack file to load.
   - If the pack file is invalid, the user should be informed and another file requested.
