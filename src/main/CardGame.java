@@ -18,16 +18,6 @@ public class CardGame {
     private final Deck[] decks;
 
     /**
-     * The entry point of the application. Initialises and runs the game.
-     *
-     * @param args command-line arguments (unused)
-     */
-    public static void main(String[] args) {
-        CardGame game = new CardGame();
-        game.run();
-    }
-
-    /**
      * Constructs a {@code CardGame} by setting up players, decks, and dealing cards.
      *
      * <p>
@@ -37,19 +27,31 @@ public class CardGame {
      */
     public CardGame() {
         int numPlayers = getNumPlayers();
-        Pack pack = getPack(numPlayers);
 
         decks = new Deck[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            decks[i] = new Deck(new ConsoleDeckLogger(), i + 1);
+            decks[i] = new Deck(new FileDeckLogger(i + 1), i + 1);
         }
 
         players = new Player[numPlayers];
         for (int i = 0; i < numPlayers; i++) {
-            players[i] = new Player(new ConsolePlayerLogger(), i + 1, numPlayers, decks);
+            players[i] = new Player(new FilePlayerLogger(i + 1), i + 1, numPlayers, decks);
         }
 
+        Pack pack = getPack(numPlayers);
         deal(pack);
+    }
+
+    /**
+     * The entry point of the application. Initialises and runs the game.
+     *
+     * @param args command-line arguments (unused)
+     */
+    public static void main(String[] args) {
+        CardGame game = new CardGame();
+        System.out.println("Running game...");
+        game.run();
+        System.out.println("Game ended.");
     }
 
     /**
