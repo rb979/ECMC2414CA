@@ -7,7 +7,7 @@ public class Card {
     private final int denomination;
 
     /**
-     * Creates a {@code main.Card} with the specified denomination.
+     * Creates a {@code Card} with the specified denomination.
      *
      * @param denomination the denomination of the card
      */

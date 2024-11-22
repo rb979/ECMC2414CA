@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Logs main.Player actions to a file named "player<n>.txt".
+ * Logs Player actions to a file named "player<n>.txt".
  */
 public class FilePlayerLogger implements IPlayerLogger {
     private final String fileName;

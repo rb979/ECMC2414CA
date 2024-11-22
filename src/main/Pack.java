@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 /**
- * Represents the main.Pack of cards used in the game.
+ * Represents the Pack of cards used in the game.
  */
 public class Pack extends CardHolder {
     /**
-     * Creates a {@code main.Pack} by reading cards from a file.
+     * Creates a {@code Pack} by reading cards from a file.
      *
      * <p>
      * This method throws an {@link IOException} if:

@@ -1,7 +1,7 @@
 package main;
 
 /**
- * Logs main.Player actions to console.
+ * Logs Player actions to console.
  */
 public class ConsolePlayerLogger implements IPlayerLogger {
     @Override

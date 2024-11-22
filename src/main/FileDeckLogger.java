@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 /**
- * Logs main.Deck actions to a file named "deck<n>.txt".
+ * Logs Deck actions to a file named "deck<n>.txt".
  */
 public class FileDeckLogger implements IDeckLogger {
     private final String fileName;

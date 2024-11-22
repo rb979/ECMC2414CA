@@ -1,7 +1,7 @@
 package main;
 
 /**
- * Logs main.Deck actions to console.
+ * Logs Deck actions to console.
  */
 public class ConsoleDeckLogger implements IDeckLogger {
     @Override
