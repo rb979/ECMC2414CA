@@ -1,5 +1,7 @@
 pack.txt
 
+lib/
+
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
